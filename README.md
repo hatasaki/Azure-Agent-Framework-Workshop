@@ -3,8 +3,8 @@
 ## 内容一覧
 1. AI Foundry エージェントとのチャット
 2. エージェントと MCP ツールの連携
-3. [optional] マルチエージェント協調
-4. [optional] 自作 MCP サーバを構築
+3. マルチエージェント協調
+4. 自作 MCP サーバを構築
 
 ---
 ## 事前準備 (インストール & アカウント)
@@ -17,23 +17,6 @@
 | Azure CLI で `az login` 済み | ローカルから安全に認証して API 呼び出し |
 | [optional] VS Code Azure Tools 拡張 | Functions のデプロイを簡単操作 |
 
-### 最小構成
-```env
-AZURE_AI_PROJECT_ENDPOINT=https://<your-project>.eastus.ai.azure.com
-AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4.1
-CREATE_NEW_AGENT=true
-USE_AZURE_CLI_CREDENTIAL=true
-
-# 公式ドキュメント検索 MCP を使う例
-MCP_FUNCTION_URL=https://learn.microsoft.com/api/mcp
-```
-
-### 自作 Azure Functions MCP を使う例
-```env
-MCP_FUNCTION_URL=https://<function_app>.azurewebsites.net/runtime/webhooks/mcp
-MCP_FUNCTION_KEY=<your_function_key>
-```
-
 ---
 ## ステップ1: AI Foundry エージェントとのチャット
 AI Foundry上の Bing エージェントとのチャット(`app.py`)
@@ -41,7 +24,7 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 
 1. 取得 & 移動
 	```bash
-	git clone https://github.com/<your_org_or_user>/Azure-Agent-Framework-Workshop.git
+	git clone https://github.com/hatasaki/Microsoft-Agent-Framework-Workshop.git
 	cd Azure-Agent-Framework-Workshop/Agent_framework
 	```
 2. ライブラリを入れる
@@ -77,7 +60,7 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 
 ---
 ## ステップ2: エージェントと MCP ツールの連携
-エージェントから [Microsoft 公式ドキュメント検索 MCP](https://learn.microsoft.com/en-us/training/support/mcp) を使って情報を引き出す (`app_mcp.py`)
+エージェントから [Microsoft 公式ドキュメント検索 MCP サーバ](https://learn.microsoft.com/en-us/training/support/mcp) を使って情報を引き出す (`app_mcp.py`)
 - 目的: エージェントが外部ツール (MCP) 経由で Microsoft 公式ドキュメントを検索し回答品質を上げる
 
 1. `.env` に以下を追加
@@ -101,7 +84,7 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 > もしツールが使われない場合: 質問を具体化 (「Microsoft Agent FrameworkのドキュメントのMCPサンプルコードを取得して、そのURLも教えて」など) すると呼び出されやすい
 
 ---
-## ステップ3 [optional]: マルチエージェント協調
+## ステップ3 : マルチエージェント協調
 3つの役割 (調査/執筆/レビュー) で協調するマルチエージェントを構築 (`app_multiagent.py`)
 - 目的: 複数エージェントが強調して複雑なタスクを実行
 
@@ -117,8 +100,8 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 
 
 ---
-## ステップ4: [optional] 自作 MCP サーバを構築
-自作 MCP ツールを Azure Functions に公開し、エージェントから利用する (`MCP_function/` をデプロイして `app_mcp.py` で接続)
+## ステップ4: 自作 MCP サーバを構築
+自作 MCP ツールを [Azure Functions の MCP トリガー](https://learn.microsoft.com/ja-jp/azure/azure-functions/functions-bindings-mcp-trigger?tabs=attribute&pivots=programming-language-python)で公開し、エージェントから利用する (`MCP_function`の MCP サーバアプリをデプロイして `app_mcp.py` で接続)
 - 目的: 自分専用の社内API/ユーティリティを MCP 化してエージェントから安全に活用
 
 1. VS CodeにAzure Tools拡張機能をインストール（未インストールの場合）
@@ -140,7 +123,7 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
    - name of the new storage account: デフォルト値のまま
    - application insights: Create new Application Insights
    - name of the new Application Insights: デフォルト値のまま
-6. 作成された Function Apps を右クリックしての```Deploy to Function App...```を実行（確認ウインドウが表示されたら```Deploy```をクリック)
+6. MCP サーバアプリのデプロイ: 作成された Function Apps に右クリックして```Deploy to Function App...```を実行（確認ウインドウが表示されたら```Deploy```をクリック)
 7. デプロイ完了後は Azure Portal で該当する Function App をオープン。MCP サーバの URL は下記のフォーマット（Azure Portal 等で確認できる Function Apps のURLにパス ```/runtime/webhooks/mcp```が追加必要な点に注意 
 	```
 	https://<your Function app name>.azurewebsites.net/runtime/webhooks/mcp
@@ -179,6 +162,22 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 
 .envファイルに環境変数を保存
 
+### 最小構成
+```env
+AZURE_AI_PROJECT_ENDPOINT=https://<your-project>.eastus.ai.azure.com
+AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4.1
+CREATE_NEW_AGENT=true
+USE_AZURE_CLI_CREDENTIAL=true
+
+# 公式ドキュメント検索 MCP を使う例
+MCP_FUNCTION_URL=https://learn.microsoft.com/api/mcp
+```
+
+### 自作 Azure Functions MCP を使う例
+```env
+MCP_FUNCTION_URL=https://<function_app>.azurewebsites.net/runtime/webhooks/mcp
+MCP_FUNCTION_KEY=<your_function_key>
+```
 ---
 ## 参考リンク
 - Azure AI Foundry: https://learn.microsoft.com/azure/ai-studio/
