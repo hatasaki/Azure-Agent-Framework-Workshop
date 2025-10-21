@@ -37,7 +37,7 @@ MCP_FUNCTION_KEY=<your_function_key>
 ---
 ## ステップ1: AI Foundry エージェントとのチャット
 AI Foundry上の Bing エージェントとのチャット(`app.py`)
-目的: Microsoft Agent Frameworkを利用して AI Foundry 上のエージェントを実行
+- 目的: Microsoft Agent Frameworkを利用して AI Foundry 上のエージェントを実行
 
 1. 取得 & 移動
 	```bash
@@ -78,7 +78,7 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 ---
 ## ステップ2: エージェントと MCP ツールの連携
 エージェントから [Microsoft 公式ドキュメント検索 MCP](https://learn.microsoft.com/en-us/training/support/mcp) を使って情報を引き出す (`app_mcp.py`)
-目的: エージェントが外部ツール (MCP) 経由で Microsoft 公式ドキュメントを検索し回答品質を上げる
+- 目的: エージェントが外部ツール (MCP) 経由で Microsoft 公式ドキュメントを検索し回答品質を上げる
 
 1. `.env` に以下を追加
 	```env
@@ -103,7 +103,7 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 ---
 ## ステップ3 [optional]: マルチエージェント協調
 3つの役割 (調査/執筆/レビュー) で協調するマルチエージェントを構築 (`app_multiagent.py`)
-目的: 複数エージェントが強調して複雑なタスクを実行
+- 目的: 複数エージェントが強調して複雑なタスクを実行
 
 1. 起動
 	```bash
@@ -119,51 +119,47 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 ---
 ## ステップ4: [optional] 自作 MCP サーバを構築
 自作 MCP ツールを Azure Functions に公開し、エージェントから利用する (`MCP_function/` をデプロイして `app_mcp.py` で接続)
-目的: 自分専用の社内API/ユーティリティを MCP 化してエージェントから安全に活用
+- 目的: 自分専用の社内API/ユーティリティを MCP 化してエージェントから安全に活用
 
 1. VS CodeにAzure Tools拡張機能をインストール（未インストールの場合）
 2. VS Code 左側の Azure アイコンをクリック(サインインを未実施の場合はサインインを実施)
-3. Azure拡張機能の Functions を右クリックし Deploy を選択
-4. Advanced オプションを選択し、下記の構成で Functions アプリを作成:
-   プラン: Flex Consumption / OS: Linux / リソースグループ: 自分のリソースグループ
-   Functionの名前: 一意の名前例: `mcp-time-tools-<自分の名前>-<任意の4桁の数字>`
-5. デプロイ完了後 URL 例:
+3. VS Code の terminal を開き、下記のコマンドを実行して Function App 用の VS Code ウインドウを開く(カレントディレクトリが```Agent_framework```であることを確認)
+	```bash
+	code ../MCP_function
 	```
-	https://mcp-time-tools-XXXX.azurewebsites.net/runtime/webhooks/mcp
+4. オープンしたウインドウで、Azure拡張機能の Functions を右クリックして```Create Azure Function App in Azure...(Advanced)``` オプションを選択し、下記の構成で Functions アプリを作成:
+   - Functionの名前: 一意の名前例: `mcp-time-tools-<自分の名前>-<ランダムな4桁の数字>`
+   - プラン: Flex Consumption
+   - location: Japan East
+   - Runtime: python 3.10
+   - Memory: 512
+   - instance count: デフォルト値のまま
+   - リソースグループ: 自分のリソースグループを指定
+   - authentication type: Secrets
+   - storage account: create new storage account
+   - name of the new storage account: デフォルト値のまま
+   - application insights: Create new Application Insights
+   - name of the new Application Insights: デフォルト値のまま
+6. 作成された Function Apps を右クリックしての```Deploy to Function App...```を実行（確認ウインドウが表示されたら```Deploy```をクリック)
+7. デプロイ完了後は Azure Portal で該当する Function App をオープン。MCP サーバの URL は下記のフォーマット（Azure Portal 等で確認できる Function Apps のURLにパス ```/runtime/webhooks/mcp```が追加必要な点に注意 
 	```
-6. 「App Keys」から Function Key をコピー
-7. `.env` へ追記:
+	https://<your Function app name>.azurewebsites.net/runtime/webhooks/mcp
+	```
+8. Azure Portal の Function App の左メニューの 関数 → アプリキー を選択し、mcp_extension の右側のキーをコピー
+9. 元の VS Code のウインドウ（Micoroft-Agent-Framework-Workshop フォルダがルートとなっているもの)に移動
+10. キーを`.env` へ追記:
 	```env
-	MCP_FUNCTION_URL=https://mcp-time-tools-XXXX.azurewebsites.net/runtime/webhooks/mcp
+	MCP_FUNCTION_URL=https://<your Function app name>.azurewebsites.net/runtime/webhooks/mcp
 	MCP_FUNCTION_KEY=<コピーしたキー>
 	```
-8. アプリの起動:
+11. アプリの起動:
 	```bash
 	python app_mcp.py
 	```
-9. ブラウザーでテスト質問: 「シアトルの現在時刻を教えて」など
+12. ブラウザーでテスト質問: 「シアトルの現在時刻を教えて」など
 
 おすすめ
 - Application Insights 有効化 (監視/例外収集)すると、デバッグ等が容易
-
-
----
-## うまく行かないときのチェックリスト
-| 問題 | 原因例 | 対処 |
-|------|--------|------|
-| 環境変数未設定エラー | `.env` のスペル/配置ミス | ファイル名が `.env` か再確認、再起動 |
-| 認証失敗 | `az login` 未実行 | ターミナルで `az login` |
-| MCP が反応しない | URL が間違い / 質問が曖昧 | URL再確認, 具体的な質問に変更 |
-| Functions 接続 401 | キー未設定 | `.env` の KEY 記述 & 再起動 |
-| タイムゾーンエラー | `Asia/Tokyo` のような IANA 名でない | 正しい IANA 名へ修正 |
-| 公式 Docs 検索弱い | 質問が短すぎる | 何を知りたいか具体化 (例: 「料金計算の仕組みは？」) |
-
----
-## 次にできる発展
-- 社内 REST API を MCP ラッパー化
-- Bicep / Terraform で IaC 化し再現性を確保
-- GitHub Actions で自動デプロイ
-- Key Vault で機密値管理 / Private Endpoint で閉域化
 
 ---
 ## 環境変数
