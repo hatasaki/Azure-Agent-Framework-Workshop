@@ -96,11 +96,6 @@ async def run_agent_interaction(
                 instructions=AGENT_INSTRUCTIONS if AGENT_INSTRUCTIONS else None,
             )
 
-        # MCPツールの設定（URLが設定されている場合のみ）
-        # 初心者向けメモ:
-        # - Microsoft公式ドキュメント検索を使う場合: MCP_FUNCTION_URL=https://learn.microsoft.com/api/mcp を設定しキーは不要。
-        # - Azure Functions で独自 MCP を公開した場合: URLを関数の webhook (例: https://<app>.azurewebsites.net/runtime/webhooks/mcp) にし、
-        #   関数キー (Function Key) を MCP_FUNCTION_KEY に設定する。ヘッダーは自動的に追加される。
         mcp_tool = None
         if MCP_FUNCTION_URL:
             tool_kwargs = {
