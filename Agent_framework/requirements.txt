@@ -1,0 +1,4 @@
+Flask>=3.0.0
+agent-framework[azure-ai]
+azure-identity>=1.17.0
+python-dotenv>=1.0.1

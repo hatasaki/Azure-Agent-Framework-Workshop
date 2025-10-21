@@ -1,0 +1,15 @@
+{
+  "version": "2.0",
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle.Preview",
+    "version": "[4.0.0, 5.0.0)"
+  },
+  "extensions": {
+    "mcp": {
+      "serverName": "timezone-server",
+      "serverVersion": "1.0.0",
+      "instructions": "Expose the 'current_time' MCP tool to retrieve the current time for a provided IANA timezone.",
+      "encryptClientState": true
+    }
+  }
+}
