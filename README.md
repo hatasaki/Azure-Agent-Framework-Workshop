@@ -48,20 +48,28 @@ AI Foundry上の Bing エージェントとのチャット(`app.py`)
 	```bash
 	pip install -r requirements.txt
 	```
-3. `.env` ファイルを作成し下記の内容を保存
-```env
-AZURE_AI_PROJECT_ENDPOINT=<your AI Foundry project endpoint>
-AZURE_AI_MODEL_DEPLOYMENT_NAME=<your model depolyment name>
-USE_AZURE_CLI_CREDENTIAL=true
-CREATE_NEW_AGENT=false
-WORKSHOP_AGENT_ID=<your agent id>
-```
-4. 起動
+3. VS Code で Agent_framework フォルダーの下に`.env` ファイルを作成し下記の内容を保存。
+   各プレースフォルダーの```AI Foundry project endpoint```および```your model deployment name```はAI Foundryポータルから確認。```your agent id```にはBingエージェントのAgent IDを登録
+
+	```env
+	AZURE_AI_PROJECT_ENDPOINT=<your AI Foundry project endpoint>
+	AZURE_AI_MODEL_DEPLOYMENT_NAME=<your model deployment name>
+	USE_AZURE_CLI_CREDENTIAL=true
+	CREATE_NEW_AGENT=false
+	WORKSHOP_AGENT_ID=<your agent id>
+	```
+4. Azure にログイン (Azure AI Foundryへの接続に必要)
+   下記の Azure CLI コマンドを実行して Azure にログイン
+   ブラウザーが利用できない環境ではデバイスコードによる認証を実施
+	```bash
+	az login
+	```   
+5. 起動
 	```bash
 	python app.py
 	```
-5. ブラウザで http://localhost:5000 を開き、質問してみる (例: 「今日の天気を調べて」)。
-6. [optional] `.env` の CREATE_NEW_AGENT=true に設定し、適宜コード内のAGENT_INSTRUCTIONSや環境変数WORKSHOP_AGENT_INSTRUCTIONSを書き換えて、新規エージェントの作成を実施
+6. ブラウザで http://localhost:5000 を開き、質問してみる (例: 「今日の天気を調べて」)。
+7. [optional] `.env` の CREATE_NEW_AGENT=true に設定し、適宜コード内のAGENT_INSTRUCTIONSや環境変数WORKSHOP_AGENT_INSTRUCTIONSを書き換えて、新規エージェントの作成を実施
 
 うまくいかないとき:
 - エラーが「Required environment variable ... is not set」→ `.env` のスペル漏れ
@@ -69,7 +77,7 @@ WORKSHOP_AGENT_ID=<your agent id>
 
 ---
 ## ステップ2: エージェントと MCP ツールの連携
-エージェントから Microsoft 公式ドキュメント検索 MCP を使って情報を引き出す (`app_mcp.py`)
+エージェントから [Microsoft 公式ドキュメント検索 MCP](https://learn.microsoft.com/en-us/training/support/mcp) を使って情報を引き出す (`app_mcp.py`)
 目的: エージェントが外部ツール (MCP) 経由で Microsoft 公式ドキュメントを検索し回答品質を上げる
 
 1. `.env` に以下を追加
@@ -90,7 +98,7 @@ WORKSHOP_AGENT_ID=<your agent id>
 - `app_mcp.py` が `MCP_FUNCTION_URL` を読み取り MCP ツールを登録。
 - エージェントは必要と判断したときに MCP 経由で検索しレスポンスへ組み込み
 
-> もしツールが使われない場合: 質問を具体化 (「Azure Functions の価格モデルは？」など) すると呼び出されやすい
+> もしツールが使われない場合: 質問を具体化 (「Microsoft Agent FrameworkのドキュメントのMCPサンプルコードを取得して、そのURLも教えて」など) すると呼び出されやすい
 
 ---
 ## ステップ3 [optional]: マルチエージェント協調
