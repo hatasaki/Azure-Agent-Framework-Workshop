@@ -20,7 +20,7 @@
 ---
 ## ステップ1: AI Foundry エージェントとのチャット
 AI Foundry上の Bing エージェントとのチャット(`app.py`)
-- 目的: Microsoft Agent Frameworkを利用して AI Foundry 上のエージェントを実行
+- 目的: [Microsoft Agent Framework](https://github.com/microsoft/agent-framework)を利用して AI Foundry 上のエージェントを実行
 
 1. 取得 & 移動
 	```bash
@@ -181,8 +181,8 @@ MCP_FUNCTION_KEY=<your_function_key>
 ---
 ## 参考リンク
 - Azure AI Foundry: https://learn.microsoft.com/azure/ai-studio/
-- MCP 仕様: https://learn.microsoft.com/api/mcp
-- Azure Functions Flex Consumption サンプル: https://github.com/Azure-Samples/functions-quickstart-javascript-azd/
+- Microsoft Agent Framework: https://github.com/microsoft/agent-framework
+- Azure Functions MCP: https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-mcp?pivots=programming-language-python
 
 ---
 ## Contributing
