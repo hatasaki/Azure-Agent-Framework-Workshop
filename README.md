@@ -1,4 +1,4 @@
-# Azure Agent Framework Workshop 
+# Microsoft Agent Framework Workshop 
 
 ## 内容一覧
 1. AI Foundry エージェントとのチャット
